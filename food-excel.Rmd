@@ -1,6 +1,6 @@
 ---
 title: "Favourite foods"
-author: "YOU"
+author: "Annie Somerville"
 date: "`r Sys.Date()`"
 output: 
   html_document: 
