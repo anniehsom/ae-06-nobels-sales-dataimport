@@ -14,26 +14,31 @@ library(tidyverse)
 
 Let's first load the data:
 
-```{r label-me1, eval=FALSE}
-nobel <- ___(___)
+```{r read-data, eval=FALSE}
+nobel <- read_csv(file = "data-raw/nobel.csv")
 ```
 
 Then let's split the data into two:
 
-```{r label-me2, eval=FALSE}
+```{r nobel-stem}
 # stem laureates
-___ <- nobel %>%
-  filter(___)
+nobel_stem <- nobel %>%
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
+```
 
-# non-steam laureates
-___ <- nobel %>%
-  filter(___)
+```{r nobel-nonstem}
+# non-stem laureates
+nobel_stem <- nobel %>%
+  filter(!(category %in% c("Physics", "Medicine", "Chemistry", "Economics")))
 ```
 
 And finally write out the data:
 
-```{r label-me3}
-# add code for writing out the two data frames here
+```{r data-frames}
+write.csv(nobel_stem, file = 'data-raw/nobel-stem.csv',
+          row.names = FALSE)
+write.csv(nobel_nonstem, file = 'data-raw/nobel-nonstem.csv',
+          row.names = FALSE)
 ```
 
 ## References {#references}
