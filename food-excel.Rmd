@@ -17,36 +17,58 @@ library(readxl)
 
 * Read in the Excel file called `favourite-food.xlsx` from the `data-raw/` folder.
 
-```{r label-me1, eval=FALSE}
-fav_food <- read_excel(___)
+```{r fav-food}
+fav_food <- read_excel("data-raw/favourite-food.xlsx")
 fav_food
 ```
 
 * Clean up `NA`s and make sure you're happy with variable types.
 
-```{r label-me2, eval=FALSE}
-fav_food <- read_excel(___, ___)
-fav_food 
+```{r clean-up}
+fav_food_cleaned_names <- fav_food %>%
+  janitor::clean_names()
+names(fav_food_cleaned_names)
+
+write.csv(fav_food_cleaned_names, file = 'data-raw/fav-food-cleaned-names.csv')
+
+fav_food_cleaned_names <- read_csv(file = "data-raw/fav-food-cleaned-names.csv",
+         na = c("N/A", "99999"))
+```
+
+``` {r five}
+fav_food_cleaned_names <- fav_food_cleaned_names %>%
+  mutate(
+    age = case_when(
+      full_name == "Chidiegwu Dunkel" ~ "5",
+      TRUE                            ~ age
+       ),
+    age = as.numeric(age)
+    )
+
+fav_food_cleaned_names
 ```
 
 * Convert SES (socio economic status) to a factor variables with levels in the 
 following order: `Low`, `Middle`, `High`.
 
-```{r label-me3}
-# add code here
+```{r factor}
+fav_food_cleaned_names$ses <- as.factor(fav_food_cleaned_names$ses)
+
+class(fav_food_cleaned_names$ses)
 ```
 
 * Write out the resulting data frame to `favourite-food.csv` in the `data/` folder.
 
-```{r label-me4}
-# add code here
+```{r write-out}
+write.csv(fav_food_cleaned_names, file = 'data-raw/favourite-food.csv')
 ```
 
 * Finally, read `favourite-food.csv` back in from the `data/` folder and 
 observe the variable types. Are they as you left them?
 
-```{r label-me5}
-# add code here
+```{r read-in}
+fav_food_csv <- read.csv("data-raw/favourite-food.csv")
+fav_food_csv
 ```
 
 ## Exercise 2
@@ -54,29 +76,51 @@ observe the variable types. Are they as you left them?
 * Read in the Excel file called `favourite-food.xlsx` from the `data-raw/` folder, 
 taking care of `NA`s and variable types.
 
-```{r label-me6, eval=FALSE}
-fav_food <- read_excel(___, ___)
-fav_food 
+```{r read-in-2}
+fav_food2 <- read_excel("data-raw/favourite-food.xlsx")
+
+fav_food_cleaned_names2 <- fav_food2 %>%
+  janitor::clean_names()
+names(fav_food_cleaned_names2)
+
+write.csv(fav_food_cleaned_names2, file = 'data-raw/fav-food-cleaned-names2.csv')
+
+fav_food_cleaned_names2 <- read_csv(file = "data-raw/fav-food-cleaned-names2.csv",
+         na = c("N/A", "99999"))
+
+fav_food_cleaned_names2 <- fav_food_cleaned_names2 %>%
+  mutate(
+    age = case_when(
+      full_name == "Chidiegwu Dunkel" ~ "5",
+      TRUE                            ~ age
+       ),
+    age = as.numeric(age)
+    )
+
+fav_food_cleaned_names2
 ```
 
 * Convert SES (socio economic status) to a factor variables with levels in the 
 following order: `Low`, `Middle`, `High`.
 
-```{r label-me7}
-# add code here
+```{r factor2}
+fav_food_cleaned_names2$ses <- as.factor(fav_food_cleaned_names2$ses)
+
+class(fav_food_cleaned_names2$ses)
 ```
 
 * Write out the resulting data frame to `favourite-food.rds` in the `data/` folder.
 
-```{r label-me8}
-# add code here
+```{r write-rds}
+write_rds(fav_food_cleaned_names2, file = 'data-raw/favourite-foods.rds')
 ```
 
 * Read `favourite-food.rds` back in from the `data/` folder and observe the 
 variable types. Are they as you left them?
 
-```{r label-me9}
-# add code here
+```{r read-rds}
+fav_food_rds <- read_rds("data-raw/favourite-foods.rds")
+fav_food_rds
 ```
 
 ## References {#references}

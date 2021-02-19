@@ -11,7 +11,7 @@
 
 <meta name="author" content="Annie Somerville" />
 
-<meta name="date" content="2021-02-18" />
+<meta name="date" content="2021-02-19" />
 
 <title>Favourite foods</title>
 
@@ -1522,7 +1522,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Favourite foods</h1>
 <h4 class="author">Annie Somerville</h4>
-<h4 class="date">2021-02-18</h4>
+<h4 class="date">2021-02-19</h4>
 
 </div>
 
@@ -1534,45 +1534,157 @@ library(readxl)</code></pre>
 <ul>
 <li>Read in the Excel file called <code>favourite-food.xlsx</code> from the <code>data-raw/</code> folder.</li>
 </ul>
-<pre class="r"><code>fav_food &lt;- read_excel(___)
+<pre class="r"><code>fav_food &lt;- read_excel(&quot;data-raw/favourite-food.xlsx&quot;)
 fav_food</code></pre>
+<pre><code>## # A tibble: 5 x 6
+##   `Student ID` `Full Name`      favourite.food     mealPlan          AGE   SES  
+##          &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt;
+## 1            1 Sunil Huffmann   Strawberry yoghurt Lunch only        4     High 
+## 2            2 Barclay Lynn     French fries       Lunch only        5     Midd~
+## 3            3 Jayendra Lyne    N/A                Breakfast and lu~ 7     Low  
+## 4            4 Leon Rossini     Anchovies          Lunch only        99999 Midd~
+## 5            5 Chidiegwu Dunkel Pizza              Breakfast and lu~ five  High</code></pre>
 <ul>
 <li>Clean up <code>NA</code>s and make sure you’re happy with variable types.</li>
 </ul>
-<pre class="r"><code>fav_food &lt;- read_excel(___, ___)
-fav_food </code></pre>
+<pre class="r"><code>fav_food_cleaned_names &lt;- fav_food %&gt;%
+  janitor::clean_names()
+names(fav_food_cleaned_names)</code></pre>
+<pre><code>## [1] &quot;student_id&quot;     &quot;full_name&quot;      &quot;favourite_food&quot; &quot;meal_plan&quot;     
+## [5] &quot;age&quot;            &quot;ses&quot;</code></pre>
+<pre class="r"><code>write.csv(fav_food_cleaned_names, file = &#39;data-raw/fav-food-cleaned-names.csv&#39;)
+
+fav_food_cleaned_names &lt;- read_csv(file = &quot;data-raw/fav-food-cleaned-names.csv&quot;,
+         na = c(&quot;N/A&quot;, &quot;99999&quot;))</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   X1 = col_double(),
+##   student_id = col_double(),
+##   full_name = col_character(),
+##   favourite_food = col_character(),
+##   meal_plan = col_character(),
+##   age = col_character(),
+##   ses = col_character()
+## )</code></pre>
+<pre class="r"><code>fav_food_cleaned_names &lt;- fav_food_cleaned_names %&gt;%
+  mutate(
+    age = case_when(
+      full_name == &quot;Chidiegwu Dunkel&quot; ~ &quot;5&quot;,
+      TRUE                            ~ age
+       ),
+    age = as.numeric(age)
+    )
+
+fav_food_cleaned_names</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##      X1 student_id full_name      favourite_food    meal_plan          age ses  
+##   &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;
+## 1     1          1 Sunil Huffmann Strawberry yoghu~ Lunch only           4 High 
+## 2     2          2 Barclay Lynn   French fries      Lunch only           5 Midd~
+## 3     3          3 Jayendra Lyne  &lt;NA&gt;              Breakfast and l~     7 Low  
+## 4     4          4 Leon Rossini   Anchovies         Lunch only          NA Midd~
+## 5     5          5 Chidiegwu Dun~ Pizza             Breakfast and l~     5 High</code></pre>
 <ul>
 <li>Convert SES (socio economic status) to a factor variables with levels in the following order: <code>Low</code>, <code>Middle</code>, <code>High</code>.</li>
 </ul>
-<pre class="r"><code># add code here</code></pre>
+<pre class="r"><code>fav_food_cleaned_names$ses &lt;- as.factor(fav_food_cleaned_names$ses)
+
+class(fav_food_cleaned_names$ses)</code></pre>
+<pre><code>## [1] &quot;factor&quot;</code></pre>
 <ul>
 <li>Write out the resulting data frame to <code>favourite-food.csv</code> in the <code>data/</code> folder.</li>
 </ul>
-<pre class="r"><code># add code here</code></pre>
+<pre class="r"><code>write.csv(fav_food_cleaned_names, file = &#39;data-raw/favourite-food.csv&#39;)</code></pre>
 <ul>
 <li>Finally, read <code>favourite-food.csv</code> back in from the <code>data/</code> folder and observe the variable types. Are they as you left them?</li>
 </ul>
-<pre class="r"><code># add code here</code></pre>
+<pre class="r"><code>fav_food_csv &lt;- read.csv(&quot;data-raw/favourite-food.csv&quot;)
+fav_food_csv</code></pre>
+<pre><code>##   X X1 student_id        full_name     favourite_food           meal_plan age
+## 1 1  1          1   Sunil Huffmann Strawberry yoghurt          Lunch only   4
+## 2 2  2          2     Barclay Lynn       French fries          Lunch only   5
+## 3 3  3          3    Jayendra Lyne               &lt;NA&gt; Breakfast and lunch   7
+## 4 4  4          4     Leon Rossini          Anchovies          Lunch only  NA
+## 5 5  5          5 Chidiegwu Dunkel              Pizza Breakfast and lunch   5
+##      ses
+## 1   High
+## 2 Middle
+## 3    Low
+## 4 Middle
+## 5   High</code></pre>
 </div>
 <div id="exercise-2" class="section level2">
 <h2>Exercise 2</h2>
 <ul>
 <li>Read in the Excel file called <code>favourite-food.xlsx</code> from the <code>data-raw/</code> folder, taking care of <code>NA</code>s and variable types.</li>
 </ul>
-<pre class="r"><code>fav_food &lt;- read_excel(___, ___)
-fav_food </code></pre>
+<pre class="r"><code>fav_food2 &lt;- read_excel(&quot;data-raw/favourite-food.xlsx&quot;)
+
+fav_food_cleaned_names2 &lt;- fav_food2 %&gt;%
+  janitor::clean_names()
+names(fav_food_cleaned_names2)</code></pre>
+<pre><code>## [1] &quot;student_id&quot;     &quot;full_name&quot;      &quot;favourite_food&quot; &quot;meal_plan&quot;     
+## [5] &quot;age&quot;            &quot;ses&quot;</code></pre>
+<pre class="r"><code>write.csv(fav_food_cleaned_names2, file = &#39;data-raw/fav-food-cleaned-names2.csv&#39;)
+
+fav_food_cleaned_names2 &lt;- read_csv(file = &quot;data-raw/fav-food-cleaned-names2.csv&quot;,
+         na = c(&quot;N/A&quot;, &quot;99999&quot;))</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   X1 = col_double(),
+##   student_id = col_double(),
+##   full_name = col_character(),
+##   favourite_food = col_character(),
+##   meal_plan = col_character(),
+##   age = col_character(),
+##   ses = col_character()
+## )</code></pre>
+<pre class="r"><code>fav_food_cleaned_names2 &lt;- fav_food_cleaned_names2 %&gt;%
+  mutate(
+    age = case_when(
+      full_name == &quot;Chidiegwu Dunkel&quot; ~ &quot;5&quot;,
+      TRUE                            ~ age
+       ),
+    age = as.numeric(age)
+    )
+
+fav_food_cleaned_names2</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##      X1 student_id full_name      favourite_food    meal_plan          age ses  
+##   &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;
+## 1     1          1 Sunil Huffmann Strawberry yoghu~ Lunch only           4 High 
+## 2     2          2 Barclay Lynn   French fries      Lunch only           5 Midd~
+## 3     3          3 Jayendra Lyne  &lt;NA&gt;              Breakfast and l~     7 Low  
+## 4     4          4 Leon Rossini   Anchovies         Lunch only          NA Midd~
+## 5     5          5 Chidiegwu Dun~ Pizza             Breakfast and l~     5 High</code></pre>
 <ul>
 <li>Convert SES (socio economic status) to a factor variables with levels in the following order: <code>Low</code>, <code>Middle</code>, <code>High</code>.</li>
 </ul>
-<pre class="r"><code># add code here</code></pre>
+<pre class="r"><code>fav_food_cleaned_names2$ses &lt;- as.factor(fav_food_cleaned_names2$ses)
+
+class(fav_food_cleaned_names2$ses)</code></pre>
+<pre><code>## [1] &quot;factor&quot;</code></pre>
 <ul>
 <li>Write out the resulting data frame to <code>favourite-food.rds</code> in the <code>data/</code> folder.</li>
 </ul>
-<pre class="r"><code># add code here</code></pre>
+<pre class="r"><code>write_rds(fav_food_cleaned_names2, file = &#39;data-raw/favourite-foods.rds&#39;)</code></pre>
 <ul>
 <li>Read <code>favourite-food.rds</code> back in from the <code>data/</code> folder and observe the variable types. Are they as you left them?</li>
 </ul>
-<pre class="r"><code># add code here</code></pre>
+<pre class="r"><code>fav_food_rds &lt;- read_rds(&quot;data-raw/favourite-foods.rds&quot;)
+fav_food_rds</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##      X1 student_id full_name      favourite_food    meal_plan          age ses  
+##   &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;            &lt;dbl&gt; &lt;fct&gt;
+## 1     1          1 Sunil Huffmann Strawberry yoghu~ Lunch only           4 High 
+## 2     2          2 Barclay Lynn   French fries      Lunch only           5 Midd~
+## 3     3          3 Jayendra Lyne  &lt;NA&gt;              Breakfast and l~     7 Low  
+## 4     4          4 Leon Rossini   Anchovies         Lunch only          NA Midd~
+## 5     5          5 Chidiegwu Dun~ Pizza             Breakfast and l~     5 High</code></pre>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>

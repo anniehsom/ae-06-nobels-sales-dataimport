@@ -17,8 +17,9 @@ such that it looks like the following.
 knitr::include_graphics("images/sales-1.png")
 ```
 
-```{r}
-
+```{r sales, eval=FALSE}
+sales <- read_excel("data-raw/sales.xlsx")
+sales
 ```
 
 * **Stretch goal:** Manipulate the sales data such such that it looks like the 
