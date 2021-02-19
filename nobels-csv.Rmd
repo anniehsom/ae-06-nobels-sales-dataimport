@@ -14,7 +14,7 @@ library(tidyverse)
 
 Let's first load the data:
 
-```{r read-data, eval=FALSE}
+```{r read-data}
 nobel <- read_csv(file = "data-raw/nobel.csv")
 ```
 
@@ -35,10 +35,8 @@ nobel_stem <- nobel %>%
 And finally write out the data:
 
 ```{r data-frames}
-write.csv(nobel_stem, file = 'data-raw/nobel-stem.csv',
-          row.names = FALSE)
-write.csv(nobel_nonstem, file = 'data-raw/nobel-nonstem.csv',
-          row.names = FALSE)
+write.csv(nobel_stem, file = 'data-raw/nobel-stem.csv')
+write.csv(nobel_nonstem, file = 'data-raw/nobel-nonstem.csv')
 ```
 
 ## References {#references}
